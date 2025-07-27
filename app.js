@@ -12,7 +12,9 @@ const path = require("path");
 
 
 require('./config/passport')(passport);
-
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 
 mongoose.connect(process.env.ATLASDB_URL)
@@ -42,7 +44,12 @@ app.use(session({
     store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+  }
 }));
 app.use(flash());
 app.use(passport.initialize());
