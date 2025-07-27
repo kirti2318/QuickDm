@@ -3,6 +3,15 @@
 # Link 
 https://quickdm-g1lk.onrender.com/  
 ⚠️ Note: This project is currently optimized for desktop view. Mobile responsiveness improvements are in progress.
+# Screenshots of my website
+<img width="1903" height="700" alt="image" src="https://github.com/user-attachments/assets/821f8c2f-c1e5-41d0-889f-ae643a450ce5" />  
+<img width="1882" height="879" alt="image" src="https://github.com/user-attachments/assets/b7a0b2b1-3d6f-4279-8408-a6e4d8ac74ba" />  
+<img width="1545" height="828" alt="image" src="https://github.com/user-attachments/assets/20415029-c70b-4b16-a3f7-60711c7a6324" />  
+<img width="1131" height="797" alt="image" src="https://github.com/user-attachments/assets/0192f886-2d68-41c6-aee1-3f72c168eac0" />  
+
+
+
+
 ## ✨ Features
 
 - 🔐 **User Authentication**
