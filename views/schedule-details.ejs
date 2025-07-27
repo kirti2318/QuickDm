@@ -1,0 +1,122 @@
+<%- include('partials/header') %>
+
+<div class="dashboard">
+  <%- include('partials/side-menu') %>
+
+  <main class="content scheduled-message-container">
+    <h2>Scheduled Message Details</h2>
+
+    <div class="detail-item"><strong>Platform:</strong> <%= schedule.platform %></div>
+
+    <div class="detail-item"><strong>Message:</strong></div>
+    <div id="messageContent" class="message-box"><%= schedule.message %></div>
+
+    <textarea id="editBox" class="message-edit" style="display: none;"><%= schedule.message %></textarea>
+
+    <div class="button-group">
+      <button class="btn" onclick="copyMessage()">Copy Message</button>
+      
+      <button class="btn" onclick="enableEdit()">Edit</button>
+      <button class="btn" id="saveBtn" onclick="saveEdit('<%= schedule._id %>')" style="display: none;">Save</button>
+    </div>
+  </main>
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+  function copyMessage() {
+    const text = document.getElementById("messageContent").innerText;
+    navigator.clipboard.writeText(text).then(() => alert("Message copied!"));
+  }
+
+  function enableEdit() {
+    document.getElementById("messageContent").style.display = "none";
+    document.getElementById("editBox").style.display = "block";
+    document.getElementById("saveBtn").style.display = "inline-block";
+  }
+
+  function saveEdit(id) {
+    const updatedMessage = document.getElementById("editBox").value;
+    fetch(`/dashboard/update-schedule/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: updatedMessage })
+    }).then(res => res.json()).then(data => {
+      if (data.success) {
+        alert("Message updated!");
+        location.reload();
+      }
+    });
+  }
+</script>
+
+<style>
+  .scheduled-message-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+  }
+
+  .detail-item {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .message-box {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+  }
+
+  .message-edit {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .btn:hover {
+    background-color: #45a049;
+  }
+
+  @media (max-width: 768px) {
+    .scheduled-message-container {
+      padding: 1rem;
+    }
+
+    .button-group {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+</style>

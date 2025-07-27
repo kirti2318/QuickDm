@@ -1,0 +1,305 @@
+<%- include('partials/header') %>
+
+<div class="dashboard">
+  <%- include('partials/side-menu') %>
+
+  <main class="content">
+    <h2 class="page-title">👤 Profile</h2>
+
+    <div class="profile-container">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <!-- Left: Profile Picture -->
+        <form id="profilePicForm" enctype="multipart/form-data" method="POST" action="/dashboard/profile-picture">
+          <div class="profile-picture-wrapper">
+            <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" alt="Profile Picture" class="profile-picture" id="profilePicPreview">
+            <label for="profilePicInput" class="upload-icon">+</label>
+            <input type="file" id="profilePicInput" name="profilePicture" accept="image/*" style="display:none;">
+            <button type="submit" class="btn-save-pic">Save</button>
+          </div>
+        </form>
+
+        <!-- Right: User Info -->
+        <div class="user-info">
+          <h3 class="username"><%= user.name %></h3>
+          <p class="user-email"><%= user.email %></p>
+          <% if (user.googleTokens && user.googleTokens.accessToken) { %>
+            <span class="connected">✔ Connected with Google</span>
+          <% } else { %>
+            <a href="/auth/google" class="connect-link">Connect Gmail</a>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Account Settings Section -->
+      <div class="settings-section">
+        <h4>⚙️ Account Settings</h4>
+        <ul class="settings-links">
+          <li><a href="/dashboard/change-password">🔒 Change Password</a></li>
+          
+          <li><button id="deleteAccountBtn" class="btn btn-danger-link">🗑 Delete Account</button></li>
+        </ul>
+      </div>
+
+      <!-- Logout -->
+      <div class="logout-container">
+        <a href="/auth/logout" class="btn btn-logout">Logout</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-content">
+    <p>Are you sure you want to delete your account?</p>
+    <div class="modal-buttons">
+      <button id="confirmDelete" class="btn btn-danger">Yes, Delete</button>
+      <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .profile-container {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .profile-picture-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+  }
+
+  .upload-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    background: black;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .btn-save-pic {
+    margin-top: 0.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 0;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .user-info {
+    flex-grow: 1;
+    min-width: 200px;
+  }
+
+  .user-info .username {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .user-info .user-email {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  .connected {
+    color: green;
+    font-weight: bold;
+  }
+
+  .connect-link {
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  .settings-section {
+    margin-top: 2rem;
+  }
+
+  .settings-section h4 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .settings-links {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .settings-links li {
+    margin-bottom: 0.8rem;
+  }
+
+  .settings-links a, .btn-danger-link {
+    text-decoration: none;
+    color: #6a1b9a;
+    font-weight: 500;
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .btn-danger-link {
+    color: #dc3545;
+  }
+
+  .btn-logout {
+    display: inline-block;
+    margin-top: 2rem;
+    background-color: #f44336;
+    padding: 0.6rem 1.2rem;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+
+  .modal.hidden {
+    display: none;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+  }
+
+  .modal-buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .page-title {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .user-info {
+      margin-top: 1rem;
+    }
+
+    .profile-container {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Delete Account Modal
+  const modal = document.getElementById("confirmModal");
+  const deleteBtn = document.getElementById("deleteAccountBtn");
+  const cancelBtn = document.getElementById("cancelDelete");
+  const confirmBtn = document.getElementById("confirmDelete");
+
+  deleteBtn.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  confirmBtn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/dashboard/delete-account", { method: "DELETE" });
+      const data = await res.json();
+      if (res.status === 200) {
+        alert("Account deleted successfully.");
+        window.location.href = "/";
+      } else {
+        alert(data.error || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error("Client error:", err);
+      alert("Something went wrong. Please try again.");
+    }
+  });
+
+  // Profile picture preview
+  document.getElementById('profilePicInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      document.getElementById('profilePicPreview').src = URL.createObjectURL(file);
+    }
+  });
+</script>
+
+<%- include('partials/footer') %>

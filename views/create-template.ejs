@@ -1,0 +1,117 @@
+<%- include('partials/header') %>
+
+<div class="dashboard">
+  <%- include('partials/side-menu') %>
+
+  <main class="content template-form-container">
+    <h2 class="template-heading"><%= prefill ? 'Edit Template' : 'Create New Template' %></h2>
+
+    <form 
+      method="POST" 
+      action="/dashboard/templates/<%= prefill?._id ? 'update/' + prefill._id : 'create' %>" 
+      class="template-form"
+    >
+
+      <label for="title" class="form-label">Title:</label>
+      <input 
+        type="text" 
+        id="title" 
+        name="title" 
+        placeholder="Template Title" 
+        value="<%= prefill?.title || '' %>" 
+        required 
+        class="form-input"
+      />
+
+      <label for="content" class="form-label">Content:</label>
+      <textarea 
+        id="content" 
+        name="content" 
+        rows="6" 
+        placeholder="Template Content" 
+        required
+        class="form-textarea"
+      ><%= prefill?.content || '' %></textarea>
+
+      <button type="submit" class="btn primary-btn">
+        <%= prefill ? 'Update Template' : 'Save Template' %>
+      </button>
+    </form>
+  </main>
+</div>
+
+<%- include('partials/footer') %>
+
+<style>
+  .template-form-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .template-heading {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+
+  .template-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .form-label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #444;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+
+  .primary-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    align-self: flex-start;
+  }
+
+  .primary-btn:hover {
+    background-color: #4338ca;
+  }
+
+  @media (max-width: 768px) {
+    .template-form-container {
+      padding: 1rem;
+    }
+
+    .template-form {
+      padding: 1rem;
+    }
+  }
+</style>

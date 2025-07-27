@@ -1,0 +1,182 @@
+<%- include('partials/header') %>
+
+<!-- ======= Sidebar Toggle Button (Mobile) & Sidebar ======= -->
+<%- include('partials/side-menu') %>
+
+<div class="main-content">
+  <main class="content">
+    <div class="compose-card">
+      <h2>📨 Compose Cold Message</h2>
+      <form action="/dashboard/compose" method="POST" class="compose-form">
+        <div class="form-grid">
+          <!-- Dropdowns + Other Inputs -->
+          <% const fields = [
+            { label: 'Who are you?', name: 'role', options: ['Student','Teacher','Recently Graduated','Post Graduated','Software Developer','Marketing specialist','Startup Founder','Freelancer','Recruiter','Manager','Other'] },
+            { label: 'Industry', name: 'industry', options: ['college','company','Research and development','Software development','Marketing','Content creation','Digital marketing','Banking','Healthcare','Graphic design','Other'] },
+            { label: 'Tone', name: 'tone', options: ['Professional','Friendly','Casual','Polite','Confident','Appreciative','Other'] },
+            { label: 'To whom are you sending?', name: 'reciever', options: ['Hiring manager','Hiring recruiter','Teacher','Team member','Alumni','Business owner','Influencer','Other'] },
+            { label: 'Language', name: 'language', options: ['English','Spanish','French','Hindi','German','Other'] },
+            { label: 'Platform', name: 'platform', options: ['Email','LinkedIn','Instagram DM','Twitter','Slack','Whatsapp','Other'] },
+            { label: 'Message Type', name: 'type', options: ['Introduction','Referral','Follow-up','Job enquiry','Networking','Collaboration request','Feedback request','Other'] }
+          ]; %>
+
+          <% fields.forEach(field => { %>
+            <label><%= field.label %></label>
+            <select name="<%= field.name %>" required onchange="toggleOtherInput(this, '<%= field.name %>-other')">
+              <option disabled selected>Select <%= field.label.toLowerCase() %></option>
+              <% field.options.forEach(opt => { %>
+                <option value="<%= opt %>"><%= opt %></option>
+              <% }) %>
+            </select>
+            <input type="text" name="<%= field.name %>Other" id="<%= field.name %>-other" placeholder="Enter <%= field.label.toLowerCase() %>">
+          <% }) %>
+
+          <label>Additional Info</label>
+          <input type="text" name="extra" placeholder="Add extra info for better message precision">
+        </div>
+
+        <button type="submit" class="btn-primary">Generate Message</button>
+      </form>
+
+      <% if (output) { %>
+        <textarea readonly rows="12" class="output-box"><%= output %></textarea>
+
+        <div class="btn-group">
+          <form method="POST" action="/dashboard/compose">
+            <% ['role','tone','industry','language','platform','type','extra'].forEach(field => { %>
+              <input type="hidden" name="<%= field %>" value="<%= locals[field] %>" />
+            <% }) %>
+            <button type="submit" class="btn-secondary">Regenerate</button>
+          </form>
+
+          <form action="/dashboard/schedule-from-compose" method="POST">
+            <input type="hidden" name="output" value="<%= output %>">
+            <button type="submit" class="btn-green">Schedule Message</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<!-- ======= Styles (same as sidebar + form) ======= -->
+<style>
+  .main-content {
+    margin-left: 240px;
+    padding: 2rem 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      margin-left: 0;
+    }
+  }
+
+  .compose-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 950px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .compose-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  select, input[type="text"] {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 1rem;
+  }
+
+  .btn-primary, .btn-secondary, .btn-green {
+    margin-top: 1rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .btn-green {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .output-box {
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-family: monospace;
+    background: #f8f9fa;
+    white-space: pre-wrap;
+  }
+
+  @media (min-width: 600px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid label {
+      grid-column: span 2;
+    }
+
+    textarea, .btn-group {
+      grid-column: span 2;
+    }
+  }
+</style>
+
+<!-- ======= Scripts ======= -->
+<script>
+  function toggleOtherInput(selectEl, inputId) {
+    const input = document.getElementById(inputId);
+    if (selectEl.value === "Other") {
+      input.style.display = "block";
+    } else {
+      input.style.display = "none";
+      input.value = "";
+    }
+  }
+
+  document.querySelectorAll('input[id$="-other"]').forEach(input => {
+    input.style.display = 'none';
+  });
+</script>
+
+<%- include('partials/footer') %>

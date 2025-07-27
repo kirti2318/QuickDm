@@ -1,0 +1,79 @@
+<form method="POST" action="/dashboard/schedule/edit/<%= schedule._id %>" class="edit-schedule-form">
+  <div class="form-group">
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" rows="4"><%= schedule.message %></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="date">Date:</label>
+    <input id="date" name="date" type="date" value="<%= schedule.date %>" />
+  </div>
+
+  <div class="form-group">
+    <label for="time">Time:</label>
+    <input id="time" name="time" type="time" value="<%= schedule.time %>" />
+  </div>
+
+  <!-- Add other fields similarly with the same form-group structure -->
+
+  <button type="submit" class="submit-btn">Update Schedule</button>
+</form>
+
+<style>
+  .edit-schedule-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .edit-schedule-form .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edit-schedule-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .edit-schedule-form input,
+  .edit-schedule-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  .edit-schedule-form textarea {
+    resize: vertical;
+  }
+
+  .edit-schedule-form .submit-btn {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .edit-schedule-form .submit-btn:hover {
+    background-color: #4338ca;
+  }
+
+  @media (max-width: 768px) {
+    .edit-schedule-form {
+      margin: 15px;
+      padding: 15px;
+    }
+  }
+</style>

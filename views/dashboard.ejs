@@ -1,0 +1,82 @@
+<%- include('partials/header') %>
+
+<div class="dashboard">
+  <%- include('partials/side-menu') %>
+
+  <main class="content">
+    <div class="dashboard-card">
+      <h2>Welcome to QuickDM's dashboard 👋</h2>
+      <p>QuickDM helps you craft powerful cold messages, manage reusable templates, and schedule messages with notifications via Gmail.</p>
+      <p>Use the sidebar to compose new messages, access saved templates, or view your scheduled communications. Everything you need is just a click away.</p>
+      <p>Make outreach smarter, not harder 💡</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+      logoutLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        const confirmed = confirm("Are you sure you want to logout?");
+        if (confirmed) {
+          window.location.href = "/auth/logout";
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .dashboard {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .content {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dashboard-card {
+    max-width: 700px;
+    width: 100%;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height:500px
+  }
+
+  .dashboard-card h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .dashboard-card p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard {
+      flex-direction: column;
+    }
+
+    .content {
+      padding: 1rem;
+    }
+
+    .dashboard-card {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<%- include('partials/footer') %>

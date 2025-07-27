@@ -1,0 +1,221 @@
+<%- include('partials/header') %>
+
+<div class="dashboard">
+  <%- include('partials/side-menu') %>
+
+  <main class="content history-container">
+    <h2>History</h2>
+
+    <!-- Tabs -->
+    <div class="history-tabs">
+      <button class="tab-button active" data-type="all">All</button>
+      <button class="tab-button" data-type="compose">Composed Cold Messages</button>
+      <button class="tab-button" data-type="template">Used Templates</button>
+      <button class="tab-button" data-type="schedule">Scheduled Messages</button>
+    </div>
+
+    <!-- Entries -->
+    <div class="history-entries">
+      <% allHistory.forEach((entry, index) => { %>
+        <% if (entry.type === 'template') { %>
+          <div class="history-entry" data-type="template">
+            <div class="history-summary" data-index="<%= index %>" onclick="toggleDetails(this.dataset.index)">
+              📝 <strong><%= entry.action.toUpperCase() %></strong> Template – 
+              "<%= entry.title %>" on <%= new Date(entry.createdAt).toLocaleString() %>
+            </div>
+            <div class="history-details" id="details-<%= index %>" style="display: none;">
+              <p><strong>Title:</strong> <%= entry.title %></p>
+              <p><strong>Content:</strong> <%= entry.content %></p>
+              <p><strong>Action:</strong> <%= entry.action %></p>
+              <p><strong>Type:</strong> <%= entry.isPrebuilt ? 'Prebuilt' : 'User' %> Template</p>
+              <p><strong>Date:</strong> <%= new Date(entry.createdAt).toLocaleString() %></p>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="history-entry" data-type="<%= entry.type %>">
+            <div class="history-summary" data-index="<%= index %>" onclick="toggleDetails(this.dataset.index)">
+              📩 <strong><%= entry.type.charAt(0).toUpperCase() + entry.type.slice(1) %></strong> – 
+              <%= entry.platform %> – <%= new Date(entry.createdAt).toLocaleString() %>
+            </div>
+            <div class="history-details" id="details-<%= index %>" style="display: none;">
+              <p><strong>Platform:</strong> <%= entry.platform %></p>
+              <p><strong>Message:</strong> <%= entry.message %></p>
+              <p><strong>Date:</strong> <%= new Date(entry.createdAt).toLocaleString() %></p>
+
+              <% if (entry.scheduleId) { %>
+                <p><strong>Scheduled Date:</strong> <%= entry.scheduleId.date %></p>
+                <p><strong>Scheduled Time:</strong> <%= entry.scheduleId.time %></p>
+                <p><strong>Timezone:</strong> <%= entry.scheduleId.timezone %></p>
+              <% } else { %>
+                <p><em>Not scheduled</em></p>
+              <% } %>
+
+              <% if (entry.scheduleId) { %>
+                <div class="history-actions">
+                  <a href="/dashboard/schedule/edit/<%= entry.scheduleId._id %>" class="btn btn-edit">Edit</a>
+                  <a href="/dashboard/schedule/cancel/<%= entry.scheduleId._id %>" class="btn btn-cancel" onclick="return confirm('Cancel this schedule?')">Cancel</a>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+      <% }) %>
+    </div>
+  </main>
+</div>
+
+<%- include('partials/footer') %>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-button');
+  const entries = document.querySelectorAll('.history-entry');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelector('.tab-button.active').classList.remove('active');
+      tab.classList.add('active');
+
+      const type = tab.dataset.type;
+      entries.forEach(entry => {
+        if (type === 'all' || entry.dataset.type === type) {
+          entry.style.display = 'block';
+        } else {
+          entry.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  function toggleDetails(index) {
+    const details = document.getElementById(`details-${index}`);
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
+<style>
+  .history-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+    background: #fdfdfd;
+  }
+
+  .history-tabs {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .tab-button {
+    padding: 10px 18px;
+    background-color: #eaeaea;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .tab-button:hover {
+    background-color: #dcdcdc;
+  }
+
+  .tab-button.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .history-entry {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+  }
+
+  .history-summary {
+    padding: 14px 20px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 1px dashed #ccc;
+    transition: background 0.2s;
+  }
+
+  .history-summary:hover {
+    background-color: #f0f0f0;
+  }
+
+  .history-details {
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .history-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+  }
+
+  .btn-edit {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .btn-edit:hover {
+    background-color: #218838;
+  }
+
+  .btn-cancel:hover {
+    background-color: #c82333;
+  }
+
+  @media (max-width: 768px) {
+    .history-container {
+      padding: 1rem;
+    }
+
+    .tab-button {
+      flex: 1 1 48%;
+      text-align: center;
+    }
+
+    .history-summary {
+      font-size: 0.95rem;
+    }
+
+    .history-details {
+      font-size: 0.9rem;
+    }
+
+    .history-actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

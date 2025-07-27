@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+
+<div class="main-container">
+  <header>
+      <!-- Website Logo -->
+<a href="/">
+  <img src="/logo img.png" alt="QuickDM Logo" style="height: 150px; width: auto; object-fit: contain;" />
+</a>
+
+      <h1>Generate cold messages and emails with ease</h1>
+      <p>Create personalized outreach using AI across platforms.</p>
+
+      <% if (user) { %>
+          <p>Welcome, <%= user.name %>!</p>
+          <a href="/auth/logout">Logout</a>
+      <% } else { %>
+          <button onclick="window.location.href='/auth/signup'">Get Started</button>
+      <% } %>
+  </header>
+
+  <section class="features">
+      <div class="feature-box"><h3>Unified Generator</h3><p>Create cold emails/messages for multiple platforms</p></div>
+      <div class="feature-box"><h3>Smart Follow-Ups</h3><p>Generate follow-up based on past interactions</p></div>
+      <div class="feature-box"><h3>Spam & Trust Score</h3><p>Optimize message for deliverability</p></div>
+      <div class="feature-box"><h3>Message Scheduling</h3><p>Send at the perfect time</p></div>
+  </section>
+</div>
+
+<%- include('partials/footer') %>
+
+<style>
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 140px); /* adjust based on header + footer height */
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+</style>
